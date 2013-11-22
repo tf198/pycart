@@ -1,4 +1,4 @@
-# Django settings for pyhub project.
+# Django settings for pycart project.
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -24,7 +24,7 @@ DATABASES = {
 }
 
 REPOS = {
-    'pyhub': '.',
+    'pycart': '.',
     'testing': 'test_repo',
 }
 
@@ -120,10 +120,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.request",
                               )
 
-ROOT_URLCONF = 'pyhub.urls'
+ROOT_URLCONF = 'pycart.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'pyhub.wsgi.application'
+WSGI_APPLICATION = 'pycart.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".

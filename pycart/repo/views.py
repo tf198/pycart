@@ -1,14 +1,16 @@
 # Create your views here.
 from django.views.generic import TemplateView
 from django.http import Http404
+from django.core.exceptions import ImproperlyConfigured
+from django.utils.safestring import mark_safe
+from django.conf import settings
 
 from pygments import highlight, lexers
 from pygments.formatters import HtmlFormatter
 
-import git, os
-from django.core.exceptions import ImproperlyConfigured
-from django.utils.safestring import mark_safe
-from django.conf import settings
+import git, os, logging
+
+logger = logging.getLogger(__name__)
 
 ACTION_ICONS = {'add': 'file',
                 'modify': 'align-left',
@@ -118,10 +120,9 @@ class RepoTreeView(RepoMixin, TemplateView):
             except:
                 lexer = lexers.TextLexer()
             formatter = HtmlFormatter(linenos=False)
-            print "LEXER", lexer
             data = mark_safe(highlight(data, lexer, formatter))
-            print lexer.filenames
             context['language'] = lexer.name
+            context['filename'] = filename
         
         context['data'] = data
         context['listing'] = listing
@@ -146,7 +147,6 @@ class RepoCommitView(RepoMixin, TemplateView):
         
         files = []
         for change in git.get_changes(repo, commit):
-            print change
             if change.type == 'delete':
                 files.append((ACTION_ICONS.get('delete'), change.old.path, commit.parents[0], 'Deleted'))
             else:
