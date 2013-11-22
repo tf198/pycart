@@ -104,7 +104,7 @@ class RepoTreeView(RepoMixin, TemplateView):
                 
                 if last_commit is None or commit.commit_time > last_commit.commit_time:
                     last_commit = commit
-                    
+                
                 if e.path.lower().startswith('readme'):
                     data = repo[e.sha].data
                     filename = "{0}/{1}".format(context['path'], e.path)

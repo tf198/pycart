@@ -65,7 +65,7 @@
 		<div class="panel-heading">
 			{{ filename }}
 			<small class="text-muted">{{ language }}</small>
-			<a class="pull-right" href="{% url 'repo_history' repo=repo branch=branch path=path %}">{{ "sort-by-attributes-alt"|glyphicon }} History</a>
+			<a class="pull-right" href="{% url 'repo_history' repo=repo branch=branch path=filename %}">{{ "sort-by-attributes-alt"|glyphicon }} History</a>
 		</div>
 		<div class="panel-body">{{ data }}</div>
 	</div>
