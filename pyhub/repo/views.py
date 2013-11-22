@@ -105,8 +105,7 @@ class RepoTreeView(RepoMixin, TemplateView):
                     
                 if e.path.lower().startswith('readme'):
                     data = repo[e.sha].data
-                    context['path'] = "{0}/{1}".format(context['path'], e.path)
-                    filename = e.path
+                    filename = "{0}/{1}".format(context['path'], e.path)
             context['commit'] = last_commit
         else: # is a file
             data = node.data
