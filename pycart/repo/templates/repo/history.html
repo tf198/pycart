@@ -3,6 +3,8 @@
 
 {% block content %}
 
+{% include "repo/path_header.html" %}
+
 <div id="section-history">
 	<div class="panel panel-info">
 		<div class="panel-heading">History for {{ path }}</div>
@@ -10,7 +12,7 @@
 		<div class="list-group">
 			{% for commit in history %}
 			<p class="list-group-item">
-				<a href="{% url 'repo_tree' repo=repo branch=commit.id path=path %}"><strong>{{ commit.message }}</strong></a><br/>
+				<a href="{% url 'repo_tree' repo=repo sha=commit.id path=path %}"><strong>{{ commit.message }}</strong></a><br/>
 				{{ commit.author|author_gravatar }} <small>{{ commit.author|author_link }} authored {{ commit.commit_time|timestamp|timesince }} ago</small>
 			</p>
 			{% endfor %}

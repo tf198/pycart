@@ -55,6 +55,6 @@ register.filter('author_gravatar', author_gravatar)
 def commit_link(context, sha):
     ' Return a short link to a specific commit '
     from django.core.urlresolvers import reverse
-    url = reverse('repo_commit', kwargs={'repo': context['repo'], 'commit': sha})
+    url = reverse('repo_commit', kwargs={'repo': context['repo'], 'sha': sha})
     return mark_safe('<a href="{0}">{1}</a>'.format(url, sha[:10]))
 register.simple_tag(takes_context=True)(commit_link)
