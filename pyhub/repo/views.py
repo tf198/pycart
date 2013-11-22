@@ -2,7 +2,7 @@
 from django.views.generic import TemplateView
 from django.http import Http404
 
-from dulwich.repo import Repo
+import git, os
 
 class RepoSummaryView(TemplateView):
     template_name = "repo/status.html"
@@ -17,43 +17,51 @@ class RepoSummaryView(TemplateView):
         
 class RepoTreeView(TemplateView):
     template_name = "repo/tree.html"
+    repo = "."
     
     def get_context_data(self, **kwargs):
+        from datetime import datetime
+        
         context = TemplateView.get_context_data(self, **kwargs)
         
         path = self.kwargs['path'].strip('/')
-        path = path.split('/') if path else []
-        print "PATH", path
+        parts = path.split('/') if path else []
         
-        repo = Repo('.')
+        repo = git.repo(self.repo)
         
-        head = repo[repo.head()]
+        branch = git.get_branch(repo, self.kwargs['branch'])
         
-        node = repo[head.tree]
+        listing = []
         
-        for p in path:
-            print "Node", repr(node)
-            
-            found = False
-            for entry in node.items():
-                print "Checking", entry
-                if entry.path == p:
-                    node = repo[entry.sha]
-                    found = True
-                    break
-                
-            if not found:
-                raise Http404()
-            
-        if hasattr(node, 'items'):
-            print dir(node)
-            context['items'] = [ x.path for x in node.items() ]
-        else:
-            print dir(node)
-            context['blob'] = node
-            
-        w = repo.get_walker(paths=['/'.join(path)])
-        context['commit'] = next(w.__iter__()).commit
+        context['breadcrumbs'] = parts
+        context['branches'] = git.branches(repo)
+        context['repo'] = self.repo
+        
+        try:
+            node = git.get_by_path(repo, branch, parts)
+        except IndexError:
+            context['error'] = "{0} does not exist in this branch".format(path)
+            return context
+        
+        if hasattr(node, 'items'): # is directory
+            last_commit = 0
+            for e in node.items():
+                print e
+                commit = git.get_commit(repo, branch, os.path.join(path, e.path))
+                listing.append((e.path, commit.message , datetime.fromtimestamp(commit.commit_time)))
+                if commit.commit_time > last_commit:
+                    last_commit = commit
+                if e.path.lower().startswith('readme'):
+                    context['data'] = repo[e.sha].data
+                    context['path'] = "{0}/{1}".format(context['path'], e.path)
+            context['commit'] = last_commit
+        else: # is a file
+            context['data'] = node.data
+            context['commit'] = git.get_commit(repo, branch, path)
+        
+        context['listing'] = listing
+        
+        
         
         return context
         
