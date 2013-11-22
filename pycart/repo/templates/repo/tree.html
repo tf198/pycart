@@ -19,13 +19,10 @@
 		</ul>
 		
 		<p class="navbar-text">
-			/
-			<a class="navbar-link" href="{% url 'repo_tree' repo=repo branch=branch path="" %}">{{ repo }}</a>
+			/ <a href="/">repos</a>
+			/ <a href="{% url 'repo_tree' repo=repo branch=branch path="" %}">{{ repo }}</a>
 			{% for p in breadcrumbs %}
-				/
-				{% if not forloop.last %}<a class="navbar-link" href="{% for i in ''|ljust:forloop.revcounter0 %}../{% endfor %}{{ p }}">{% endif %}
-				{{ p }}
-				{% if not forloop.last %}</a>{% endif %}
+				/ <a href="{% for i in ''|ljust:forloop.revcounter0 %}../{% endfor %}{{ p }}">{{ p }}</a>
 			{% endfor %}
 		</p>
 	</div>
