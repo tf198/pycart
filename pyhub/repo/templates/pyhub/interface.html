@@ -34,7 +34,7 @@
 	{% block body %}
 	
 		<div class="navbar navbar-inverse navbar-static">
-			<a class="navbar-brand" href="/repo/tree/master">PyHub</a>
+			<a class="navbar-brand" href="{% url 'repo_tree' repo=repo branch='master' path='' %}">PyHub</a>
 		</div>
 	
 		<div class="container">

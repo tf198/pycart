@@ -12,7 +12,7 @@
 					{{ "random"|glyphicon }} &nbsp; branch: <b>{{ branch_name }}</b> <b class="caret"></b></a>
 				<ul class="dropdown-menu">
 					{% for i in branches %}
-					<li><a href="{% url 'repo_tree' branch=i path=path %}">{{ i }}</a></li>
+					<li><a href="{% url 'repo_tree' repo=repo branch=i path=path %}">{{ i }}</a></li>
 					{% endfor %}
 				</ul>
 			</li>
@@ -20,7 +20,7 @@
 		
 		<p class="navbar-text">
 			/
-			<a class="navbar-link" href="{% url 'repo_tree' branch=branch path="" %}">{{ repo }}</a>
+			<a class="navbar-link" href="{% url 'repo_tree' repo=repo branch=branch path="" %}">{{ repo }}</a>
 			{% for p in breadcrumbs %}
 				/
 				{% if not forloop.last %}<a class="navbar-link" href="{% for i in ''|ljust:forloop.revcounter0 %}../{% endfor %}{{ p }}">{% endif %}
@@ -40,14 +40,14 @@
 		</div>
 	
 		<div class="panel-body">
-			<span class="pull-right"><small>commit {{ commit.id|commit_link }}</small></span>
+			<span class="pull-right"><small>commit {% commit_link commit.id %}</small></span>
 			{{ commit.author|author_gravatar }} <small>{{ commit.author|author_link }} authored {{ commit.commit_time|timestamp|timesince }} ago</small>
 		</div>
 	
 		<table class="table table-condensed">
 		{% for icon, name, message, mode, time in listing %}
 			<tr>
-				<td>{{ icon|glyphicon }} &nbsp; <a href="{{ request.path }}/{{ name }}">{{ name }}</a></td>
+				<td>{{ icon|glyphicon }} &nbsp; <a href="{% url 'repo_tree' repo=repo branch=branch path=path|add:'/'|add:name %}">{{ name }}</a></td>
 				<td>{{ message }}</td>
 				<td>{{ mode }}</td>
 				<td class="min">{{ time|timesince }} ago</td>
@@ -64,7 +64,8 @@
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			{{ path }}
-			<a class="pull-right" href="{% url 'repo_history' branch=branch path=path %}">{{ "sort-by-attributes-alt"|glyphicon }} History</a>
+			<small class="text-muted">{{ language }}</small>
+			<a class="pull-right" href="{% url 'repo_history' repo=repo branch=branch path=path %}">{{ "sort-by-attributes-alt"|glyphicon }} History</a>
 		</div>
 		<div class="panel-body">{{ data }}</div>
 	</div>

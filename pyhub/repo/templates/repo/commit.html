@@ -14,7 +14,7 @@
 			<div class="pull-right text-right"><small>
 				commit {{ commit.id }}<br/>
 				{% with commit.parents|length as c %}
-				{{ c }} parent{{ c|pluralize }} {% for p in commit.parents %}{{ p|commit_link }} {% endfor %}
+				{{ c }} parent{{ c|pluralize }} {% for p in commit.parents %}{% commit_link p %} {% endfor %}
 				{% endwith %}
 				</small>
 			</div>
@@ -32,7 +32,7 @@
 			{{ icon|glyphicon }}
 			{{ file }}
 			<div class="pull-right">
-				<a href="/repo/tree/{{ sha }}/{{ file }}">{{ "file"|glyphicon }} @{{ sha|slice:":10" }}</a>
+				<a href="{% url 'repo_tree' repo=repo branch=sha path=file %}">{{ "file"|glyphicon }} @{{ sha|slice:":10" }}</a>
 			</div>
 		</div>
 		<div class="panel-body">{{ data }}</div>

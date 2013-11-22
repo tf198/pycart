@@ -43,6 +43,8 @@ def author_gravatar(text, size=20):
     return ""
 register.filter('author_gravatar', author_gravatar)
 
-def commit_link(sha):
-    return mark_safe('<a href="/repo/commit/{0}">{1}</a>'.format(sha, sha[:10]))
-register.filter('commit_link', commit_link)
+def commit_link(context, sha):
+    from django.core.urlresolvers import reverse
+    url = reverse('repo_commit', kwargs={'repo': context['repo'], 'commit': sha})
+    return mark_safe('<a href="{0}">{1}</a>'.format(url, sha[:10]))
+register.simple_tag(takes_context=True)(commit_link)

@@ -8,6 +8,7 @@ from pygments.formatters import HtmlFormatter
 import git, os
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.safestring import mark_safe
+from django.conf import settings
 
 ACTION_ICONS = {'add': 'file',
                 'modify': 'align-left',
@@ -25,12 +26,19 @@ def filemode(mode):
         
 
 class RepoMixin(object):
-    repo = None
+    fixed_repo = None
     
     def get_repo(self):
         
-        if self.repo is not None:
-            return self.repo
+        if self.fixed_repo is not None:
+            return self.fixed_repo
+        
+        if 'repo' in self.kwargs:
+            mappings = getattr(settings, "REPOS", {})
+            try:
+                return mappings[self.kwargs['repo']]
+            except KeyError:
+                raise Http404("No such repo: " + self.kwargs['repo'])
         
         raise ImproperlyConfigured("Need to provide a repo")
 
@@ -69,7 +77,6 @@ class RepoTreeView(RepoMixin, TemplateView):
         
         context['breadcrumbs'] = parts
         context['branches'] = git.branches(repo)
-        context['repo'] = self.repo
         
         try:
             node = git.get_by_path(repo, branch, parts)
@@ -108,12 +115,14 @@ class RepoTreeView(RepoMixin, TemplateView):
         
         if data is not None:
             try:
-                lexer = lexers.get_lexer_for_filename(filename, data)
+                lexer = lexers.guess_lexer_for_filename(filename, data)
             except:
                 lexer = lexers.TextLexer()
             formatter = HtmlFormatter(linenos=False)
             print "LEXER", lexer
             data = mark_safe(highlight(data, lexer, formatter))
+            print lexer.filenames
+            context['language'] = lexer.name
         
         context['data'] = data
         context['listing'] = listing
