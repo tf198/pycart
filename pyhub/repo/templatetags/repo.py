@@ -24,6 +24,10 @@ def gravatar(email, size=20):
     return mark_safe('<img src="{0}"/>'.format(url))
 register.filter('gravatar', gravatar)
 
+def glyphicon(name):
+    return mark_safe('<i class="glyphicon glyphicon-{0}"></i>'.format(name))
+register.filter('glyphicon', glyphicon)
+
 def author_link(text):
     match = git_author.match(text)
     if match:

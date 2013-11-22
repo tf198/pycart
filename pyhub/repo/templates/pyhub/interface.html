@@ -1,7 +1,9 @@
 <html>
 	<head>
+	{% block head %}
 		<title>PyHub</title>
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    {% block style %}
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
 	
 	    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -11,19 +13,28 @@
 	      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
 	    <![endif]-->
 	    <link rel="stylesheet" href="{{ STATIC_URL }}css/repo.css" />
+	    {% if inline_style %}
+	    <style type="text/css">
+	    {{ inline_style }}
+	    </style>
+	    {% endif %}
+	    {% endblock %}
+	{% endblock %}
 	</head>
 	
 	<body>
 	
-	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://code.jquery.com/jquery.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+	{% block scripts %}
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	    <script src="https://code.jquery.com/jquery.js"></script>
+	    <!-- Include all compiled plugins (below), or include individual files as needed -->
+	    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+    {% endblock %}
 	
 	{% block body %}
 	
 		<div class="navbar navbar-inverse navbar-static">
-			<a class="navbar-brand" href="#">PyHub</a>
+			<a class="navbar-brand" href="/repo/tree/master">PyHub</a>
 		</div>
 	
 		<div class="container">

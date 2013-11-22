@@ -1,0 +1,44 @@
+{% extends "pyhub/interface.html" %}
+{% load repo %}
+
+{% block content %}
+
+<div id="section-commit">
+	<div class="panel panel-info">
+	
+		<div class="panel-heading">
+			{{ commit.message }}
+		</div>
+	
+		<div class="panel-body">
+			<div class="pull-right text-right"><small>
+				commit {{ commit.id }}<br/>
+				{% with commit.parents|length as c %}
+				{{ c }} parent{{ c|pluralize }} {% for p in commit.parents %}{{ p|commit_link }} {% endfor %}
+				{% endwith %}
+				</small>
+			</div>
+			{{ commit.author|author_gravatar }} <small>{{ commit.author|author_link }} authored {{ commit.commit_time|timestamp|timesince }} ago</small>
+		</div>
+		
+	</div>
+</div>
+
+<div id="section-files">
+
+	{% for icon, file, sha, data in files %}
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			{{ icon|glyphicon }}
+			{{ file }}
+			<div class="pull-right">
+				<a href="/repo/tree/{{ sha }}/{{ file }}">{{ "file"|glyphicon }} @{{ sha|slice:":10" }}</a>
+			</div>
+		</div>
+		<div class="panel-body">{{ data }}</div>
+		</div>
+	{% endfor %}
+
+</div>
+
+{% endblock %}
