@@ -1,5 +1,5 @@
 # Create your views here.
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
 from django.http import Http404
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.safestring import mark_safe
@@ -44,13 +44,24 @@ class RepoMixin(object):
         
         raise ImproperlyConfigured("Need to provide a repo")
 
-class RepoSummaryView(RepoMixin, TemplateView):
-    template_name = "repo/status.html"
+class RepoListView(TemplateView):
+    template_name = "repo/list.html"
     
     def get_context_data(self, **kwargs):
         context = TemplateView.get_context_data(self, **kwargs)
         
+        context['repos'] = getattr(settings, "REPOS", {}).keys()
+        
         return context
+
+class RepoSummaryView(RedirectView):
+    
+    def get_redirect_url(self, **kwargs):
+        from django.core.urlresolvers import reverse
+        
+        return reverse('repo_tree', kwargs={'repo': kwargs['repo'],
+                                            'branch': 'master',
+                                            'path': ''})
      
 class RepoTreeView(RepoMixin, TemplateView):
     template_name = "repo/tree.html"

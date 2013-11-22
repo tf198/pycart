@@ -1,0 +1,22 @@
+{% extends "pyhub/interface.html" %}
+
+{% block content %}
+
+<div class="row">
+
+	<div class="col-md-4 col-md-offset-4">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4 class="panel-heading-text">PyCart Repos</h4>
+			</div>
+			<ul class="list-group">
+				{% for repo in repos %}
+				<li class="list-group-item"><a href="{% url 'repo_tree' repo=repo branch='master' path='' %}">{{ repo }}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+
+</div>
+
+{% endblock %}
