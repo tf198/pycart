@@ -41,7 +41,7 @@
 			<small class="text-muted">&nbsp;{{ language }}</small>
 			<a class="pull-right" href="{% url 'repo_history' repo=repo sha=sha path=filename %}">{{ "sort-by-attributes-alt"|glyphicon }} History</a>
 		</div>
-		<div class="panel-body">{{ data }}</div>
+		<div class="panel-body">{{ data|safe }}</div>
 	</div>
 </div>
 {% endif %}

@@ -9,6 +9,8 @@ from django.conf import settings
 from pygments import highlight, lexers
 from pygments.formatters import HtmlFormatter
 
+from repo.renderer import render_file
+
 import git, os, logging
 
 logger = logging.getLogger(__name__)
@@ -137,13 +139,8 @@ class RepoTreeView(RepoMixin, TemplateView):
             filename = path
         
         if data is not None:
-            try:
-                lexer = lexers.guess_lexer_for_filename(filename, data)
-            except:
-                lexer = lexers.TextLexer()
-            formatter = HtmlFormatter(linenos=False)
-            data = mark_safe(highlight(data, lexer, formatter))
-            context['language'] = lexer.name
+            data, meta = render_file(filename, data)
+            context['language'] = meta.get('language', 'Unknown')
             context['filename'] = filename
         
         context['data'] = data
