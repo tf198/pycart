@@ -1,9 +1,9 @@
-{% extends "pyhub/interface.html" %}
-{% load repo %}
+{% extends "interface.html" %}
+{% import "macros.inc" as macros %}
 
 {% block content %}
 
-{% include "repo/path_header.html" %}
+{% include "path_header.html" %}
 
 <div id="section-history">
 	<div class="panel panel-info">
@@ -12,8 +12,8 @@
 		<div class="list-group">
 			{% for commit in history %}
 			<p class="list-group-item">
-				<a href="{% url 'repo_tree' repo=repo sha=commit.id path=path %}"><strong>{{ commit.message }}</strong></a><br/>
-				{{ commit.author|author_gravatar }} <small>{{ commit.author|author_link }} authored {{ commit.commit_time|timestamp|timesince }} ago</small>
+				<a href="{{ macros.tree_url(repo, commit.id, path) }}"><strong>{{ commit.message }}</strong></a><br/>
+				{{ author_gravatar(commit.author) }} <small>{{ author_link(commit.author) }} authored {# commit.commit_time|timestamp|timesince #} ago</small>
 			</p>
 			{% endfor %}
 		</div>

@@ -9,6 +9,7 @@ urls = (
     '/repo/(\w+)/tree/([^/]+)/(.*)', 'git_repo.TreeView',
     '/repo/(\w+)/history/([^/]+)/(.*)', 'git_repo.HistoryView',
     '/repo/(\w+)/commit/(\w+)', 'git_repo.CommitView',
+    '/', 'git_repo.ListView',
 )
 app = web.application(urls, globals())
 

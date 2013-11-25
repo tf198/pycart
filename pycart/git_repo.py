@@ -1,7 +1,7 @@
 from jinja2 import Environment,FileSystemLoader
 import os
 from datetime import datetime
-import git, renderer, utils
+import git, renderer, utils, settings
 import web
 
 def render_template(template_name, **context):
@@ -34,13 +34,17 @@ class RepoMixin(object):
         
         return render_template(self.template, globals=helpers, **d)
     
-    def get_repo(self):
-        return git.repo('../')
+    def get_repo(self, repo):
+        try:
+            repo_path = settings.REPOS[repo]
+        except KeyError:
+            raise web.notfound("No repo named {0}".format(repo))
+        return git.repo(repo_path)
     
     def get_base_context(self, repo, sha, path):
         d = {}
         
-        self.repo = self.get_repo()
+        self.repo = self.get_repo(repo)
         
         try:
             if sha in self.repo:
@@ -64,6 +68,11 @@ class RepoMixin(object):
         d['breadcrumbs'] = d['path'].split('/') if path else []
         
         return d
+
+class ListView(object):
+    
+    def GET(self):
+        return render_template('list.html', repos=settings.REPOS.keys())
 
 class TreeView(RepoMixin):
     template = "tree.html"

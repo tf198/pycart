@@ -1,9 +1,9 @@
-{% extends "pyhub/interface.html" %}
-{% load repo %}
+{% extends "interface.html" %}
+{% import "macros.inc" as macros %}
 
 {% block content %}
 
-{% include "repo/path_header.html" %}
+{% include "path_header.html" %}
 
 {% if commit %}
 <div id="section-commit">
@@ -14,17 +14,17 @@
 		</div>
 	
 		<div class="panel-body">
-			<span class="pull-right"><small>commit {% commit_link commit.id %}</small></span>
-			{{ commit.author|author_gravatar }} <small>{{ commit.author|author_link }} authored {{ commit.commit_time|timestamp|timesince }} ago</small>
+			<span class="pull-right"><small>commit {{ macros.commit_link(repo, commit.id) }}</small></span>
+			{{ author_gravatar(commit.author) }} <small>{{ author_link(commit.author) }} authored {{ timesince(commit.commit_time) }} ago</small>
 		</div>
 	
 		<table class="table table-condensed">
 		{% for icon, name, message, mode, time in listing %}
 			<tr>
-				<td>{{ icon|glyphicon }} &nbsp; <a href="{% url 'repo_tree' repo=repo sha=ref_link path=path|add:'/'|add:name %}">{{ name }}</a></td>
+				<td>{{ macros.glyphicon(icon) }} &nbsp; <a href="{{ macros.tree_url(repo, ref_link, path+'/'+name) }}">{{ name }}</a></td>
 				<td>{{ message }}</td>
 				<td>{{ mode }}</td>
-				<td class="min">{{ time|timesince }} ago</td>
+				<td class="min">{{ time }}</td>
 			</tr>
 		{% endfor %}
 		</table>
@@ -39,7 +39,7 @@
 		<div class="panel-heading">
 			{{ filename }}
 			<small class="text-muted">&nbsp;{{ language }}</small>
-			<a class="pull-right" href="{% url 'repo_history' repo=repo sha=sha path=filename %}">{{ "sort-by-attributes-alt"|glyphicon }} History</a>
+			<a class="pull-right" href="{{ macros.history_url(repo, sha, filename) }}">{{ macros.glyphicon("sort-by-attributes-alt") }} History</a>
 		</div>
 		<div class="panel-body">{{ data|safe }}</div>
 	</div>

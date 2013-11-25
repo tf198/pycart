@@ -1,9 +1,9 @@
-{% extends "pyhub/interface.html" %}
-{% load repo %}
+{% extends "interface.html" %}
+{% import "macros.inc" as macros %}
 
 {% block content %}
 
-{% include "repo/path_header.html" %}
+{% include "path_header.html" %}
 
 <div id="section-commit">
 	<div class="panel panel-info">
@@ -15,12 +15,11 @@
 		<div class="panel-body">
 			<div class="pull-right text-right"><small>
 				commit {{ commit.id }}<br/>
-				{% with commit.parents|length as c %}
-				{{ c }} parent{{ c|pluralize }} {% for p in commit.parents %}{% commit_link p %} {% endfor %}
-				{% endwith %}
+				{% set c = commit.parents|length %}
+				{{ c }} parents {% for p in commit.parents %}{{ macros.commit_link(repo, p) }} {% endfor %}
 				</small>
 			</div>
-			{{ commit.author|author_gravatar }} <small>{{ commit.author|author_link }} authored {{ commit.commit_time|timestamp|timesince }} ago</small>
+			{{ author_gravatar(commit.author) }} <small>{{ author_link(commit.author) }} authored {{ timesince(commit.commit_time) }} ago.</small>
 		</div>
 		
 	</div>
@@ -31,10 +30,10 @@
 	{% for icon, file, sha, data in files %}
 	<div class="panel panel-default">
 		<div class="panel-heading">
-			{{ icon|glyphicon }}
+			{{ macros.glyphicon(icon) }}
 			{{ file }}
 			<div class="pull-right">
-				<a href="{% url 'repo_tree' repo=repo sha=sha path=file %}">{{ "file"|glyphicon }} @{{ sha|slice:":10" }}</a>
+				<a href="{{ macros.tree_url(repo, sha, file) }}">{{ macros.glyphicon("file") }} @{{ sha[:10] }}</a>
 			</div>
 		</div>
 		<div class="panel-body">{{ data }}</div>
