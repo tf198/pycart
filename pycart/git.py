@@ -42,7 +42,6 @@ def get_by_path(repo, commit, parts):
     
     # descend the tree
     for p in parts:
-        print "Part", p
         entry = select_by_path(node.items(), p)
         node = repo[entry.sha]
         
