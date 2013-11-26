@@ -36,7 +36,6 @@ def get_style():
 def render_file(filename, data):
     # do basic filename identification first
     _root, ext = os.path.splitext(filename)
-    logger.info("{0}: {1}".format(filename, ext))
     
     if modules['docutils'] and ext.lower()[1:] in rest_exts:
         return render_rest(filename, data)
@@ -48,7 +47,7 @@ def render_file(filename, data):
         return render_pygments(filename, data)
     
     # fall back to pre
-    return "<pre>{0}</pre>".format(data), {'language': 'Unknown'}
+    return "<pre>{0}</pre>".format(data), {'language': ''}
 
 def render_diff(data):
     if not modules['pygments']:
