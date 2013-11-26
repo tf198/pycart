@@ -2,7 +2,9 @@ from jinja2 import Environment,FileSystemLoader
 import os
 from datetime import datetime
 import git, renderer, utils, settings
-import web
+import web, glob, logging
+
+logger = logging.getLogger(__name__)
 
 def render_template(template_name, **context):
     extensions = context.pop('extensions', [])
@@ -21,6 +23,23 @@ ACTION_ICONS = {'add': 'file',
                 'modify': 'align-left',
                 'delete': 'trash'}
 
+# explicitly defined repos
+repos = settings.REPOS.copy()
+
+# add repo directories
+logger.info("Searching for repos")
+for d in getattr(settings, "REPO_DIRS", []):
+    found = [ os.path.dirname(x) for x in glob.glob('{0}/*/HEAD'.format(d))]
+    repos.update({ os.path.splitext(x[len(d)+1:])[0]: x for x in found })
+
+# remove excluded repos
+for x in getattr(settings, "REPO_EXCLUDE", []):
+    if x in repos:
+        del(repos[x])
+    
+logger.info("{0} repos found".format(len(repos)))
+    
+
 class RepoMixin(object):
     template = None
     sha_type = None
@@ -36,7 +55,7 @@ class RepoMixin(object):
     
     def get_repo(self, repo):
         try:
-            repo_path = settings.REPOS[repo]
+            repo_path = repos[repo]
         except KeyError:
             raise web.notfound("No repo named {0}".format(repo))
         return git.repo(repo_path)
@@ -72,7 +91,7 @@ class RepoMixin(object):
 class ListView(object):
     
     def GET(self):
-        return render_template('list.html', repos=settings.REPOS.keys())
+        return render_template('list.html', repos=repos.keys())
 
 class TreeView(RepoMixin):
     template = "tree.html"

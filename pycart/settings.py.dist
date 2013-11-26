@@ -1,0 +1,15 @@
+'''
+Created on 25/11/2013
+
+@author: tris
+'''
+
+# All paths are relative to this file
+
+# Explicit repos
+REPOS = {'pycart': '..'}
+
+# A directory containing bare repositories to be served
+REPO_DIRS = ('..', )
+
+REPO_EXCLUDE = ('gitolite-admin.git', )
