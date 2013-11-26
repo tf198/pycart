@@ -2,7 +2,7 @@ from jinja2 import Environment,FileSystemLoader
 import os
 from datetime import datetime
 import git, renderer, utils, settings
-import web, glob, logging
+import web, logging
 
 logger = logging.getLogger(__name__)
 
@@ -29,8 +29,10 @@ repos = settings.REPOS.copy()
 # add repo directories
 logger.info("Searching for repos")
 for d in getattr(settings, "REPO_DIRS", []):
-    found = [ os.path.dirname(x) for x in glob.glob('{0}/*/HEAD'.format(d))]
-    repos.update({ os.path.splitext(x[len(d)+1:])[0]: x for x in found })
+    for directory, subdirs, files in os.walk(d):
+        root, ext = os.path.splitext(directory)
+        if ext == '.git':
+            repos[root[len(d)+1:]] = directory
 
 # remove excluded repos
 for x in getattr(settings, "REPO_EXCLUDE", []):
