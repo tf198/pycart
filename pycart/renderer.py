@@ -48,7 +48,7 @@ def render_file(filename, data):
         return render_pygments(filename, data)
     
     # fall back to pre
-    return "<pre>{0}</pre>".format(data)
+    return "<pre>{0}</pre>".format(data), {'language': 'Unknown'}
 
 def render_diff(data):
     if not modules['pygments']:
