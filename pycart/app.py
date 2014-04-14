@@ -5,7 +5,7 @@ Created on 25/11/2013
 '''
 import web
 
-repo = r'/repo/([\w\/\-]+)'
+repo = r'/repo/([\w\/\-\.]+)'
 
 urls = (
     repo + '/tree/([^/]+)/(.*)', 'git_repo.TreeView',
